@@ -24,6 +24,9 @@
 #import <MoPub.h>
 #import "MPNativeAdError.h"
 
+#define PRODUCT_URL ([NSURL URLWithString:@"http://prod.uct"])
+#define LOGO_URL ([NSURL URLWithString:@"http://lo.go"])
+
 @interface CRNativeCustomEventTests : XCTestCase
 
 @property(strong, nonatomic) Criteo *criteoMock;
@@ -65,6 +68,18 @@
 }
 
 #pragma mark - Delegate call
+
+- (void)testNativeLoaderDidReceiveAd {
+  CRNativeCustomEvent *event = [self nativeCustomEventWithMocks];
+  event.delegate = OCMProtocolMock(@protocol(MPNativeCustomEventDelegate));
+  [event requestAdWithCustomEventInfo:self.defaultEventInfo adMarkup:nil];
+
+  CRNativeAd *ad = OCMClassMock(CRNativeAd.class);
+  CRNativeLoader *loader = nil;
+  [self.loaderDelegate nativeLoader:loader didReceiveAd:ad];
+
+  OCMVerify(times(1), [event.delegate nativeCustomEvent:event didLoadAd:OCMOCK_ANY]);
+}
 
 - (void)testNativeLoaderDidFailToReceiveAdWithError {
   CRNativeCustomEvent *event = [self nativeCustomEventWithMocks];
@@ -142,6 +157,54 @@
   NSDictionary *userInfo = @{NSLocalizedDescriptionKey : @"test"};
   NSError *criteoError = [[NSError alloc] initWithDomain:@"Test" code:1 userInfo:userInfo];
   return criteoError;
+}
+
+#pragma mark Ad Adapter tests
+
+- (void)testEmptyProperties {
+  NSDictionary *expected = @{};
+  CRNativeAd *ad = OCMClassMock(CRNativeAd.class);
+  CRNativeCustomEvent *customEvent = [self nativeCustomEventWithMocks];
+
+  NSDictionary *props = customEvent.properties;
+
+  XCTAssertEqualObjects(props, expected);
+}
+
+- (void)testProperties {
+  // The keys that matter:
+  // https://developers.mopub.com/networks/integrate/build-adapters-ios/#quick-start-for-native-ads
+  NSDictionary *expected = @{
+    kAdTitleKey : NSStringFromSelector(@selector(title)),
+    kAdTextKey : NSStringFromSelector(@selector(body)),
+    kAdIconImageKey : LOGO_URL,
+    kAdMainImageKey : PRODUCT_URL,
+    kAdCTATextKey : NSStringFromSelector(@selector(callToAction)),
+  };
+
+  CRNativeCustomEvent *customEvent = [self nativeCustomEventWithMocks];
+
+  NSDictionary *props = customEvent.properties;
+
+  XCTAssertEqualObjects(props, expected);
+}
+
+- (CRNativeAd *)nativeAdMock {
+  CRMediaContent *product = OCMClassMock(CRMediaContent.class);
+  OCMStub([product url]).andReturn(PRODUCT_URL);
+  CRMediaContent *logo = OCMClassMock(CRMediaContent.class);
+  OCMStub([logo url]).andReturn(LOGO_URL);
+
+  CRNativeAd *ad = OCMClassMock(CRNativeAd.class);
+  OCMStub([ad title]).andReturn(@"title");
+  OCMStub([ad body]).andReturn(@"body");
+  OCMStub([ad price]).andReturn(@"price");
+  OCMStub([ad callToAction]).andReturn(@"callToAction");
+  OCMStub([ad productMedia]).andReturn(product);
+  OCMStub([ad advertiserDescription]).andReturn(@"advertiserDescription");
+  OCMStub([ad advertiserDescription]).andReturn(@"advertiserDomain");
+  OCMStub([ad advertiserLogoMedia]).andReturn(logo);
+  return ad;
 }
 
 @end

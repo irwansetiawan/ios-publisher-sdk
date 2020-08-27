@@ -29,7 +29,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CRNativeCustomEvent : MPNativeCustomEvent
+@interface CRNativeCustomEvent : MPNativeCustomEvent <MPNativeAdAdapter>
+
+@property (nonatomic, weak) id<MPNativeCustomEventDelegate, MPNativeAdAdapterDelegate> delegate;
 
 @end
 

@@ -34,6 +34,8 @@
 
 @property(strong, nonatomic) CRNativeLoader *loader;
 
+@property(strong, nonatomic) CRNativeAd *nativeAd;
+
 @end
 
 @implementation CRNativeCustomEvent
@@ -92,8 +94,9 @@
 #pragma mark CRNativeLoaderDelegate
 
 - (void)nativeLoader:(CRNativeLoader *)loader didReceiveAd:(CRNativeAd *)ad {
-  // TODO: Implement native ad adapter
-  // TODO: Call delegate's nativeCustomEvent:didLoadAd:
+  self.nativeAd = ad;
+  MPNativeAd *nativeAd = [[MPNativeAd alloc] initWithAdAdapter:self];
+  [self.delegate nativeCustomEvent:self didLoadAd:nativeAd];
 }
 
 - (void)nativeLoader:(CRNativeLoader *)loader didFailToReceiveAdWithError:(NSError *)error {
@@ -113,5 +116,33 @@
 
 - (void)nativeLoaderWillLeaveApplicationForNativeAd:(CRNativeLoader *)loader {
 }
+
+# pragma mark MPNativeAdAdapter Implementation
+
+- (NSDictionary *)properties {
+  return [self computedProperties];
+}
+
+
+- (NSDictionary *)computedProperties {
+  NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
+  props[kAdTitleKey] = self.nativeAd.title;
+  props[kAdTextKey] = self.nativeAd.body;
+  props[kAdMainImageKey] = self.nativeAd.productMedia.url;
+  props[kAdIconImageKey] = self.nativeAd.advertiserLogoMedia.url;
+  props[kAdCTATextKey] = self.nativeAd.callToAction;
+  return props;
+}
+
+- (NSURL *)defaultActionURL {
+  // https://developers.mopub.com/networks/integrate/build-adapters-ios/#quick-start-for-native-ads
+  // > Another necessary property to implement is the defaultActionURL -
+  // > the URL the user is taken to when they interact with the ad.
+  // > If the native ad automatically opens it then this can be nil.
+  //
+  // The Criteo SDK opens it itself. So we return nil.
+  return nil;
+}
+
 
 @end
