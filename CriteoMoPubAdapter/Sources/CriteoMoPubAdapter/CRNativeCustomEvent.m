@@ -35,6 +35,8 @@
 @property(strong, nonatomic) CRNativeLoader *loader;
 
 @property(strong, nonatomic) CRNativeAd *nativeAd;
+@property(strong, nonatomic) CRMediaView *productMediaView;
+@property(strong, nonatomic) CRMediaView *advertiserLogoMediaView;
 
 @end
 
@@ -144,5 +146,20 @@
   return nil;
 }
 
+- (UIView *)mainMediaView {
+  if (self.productMediaView == nil) {
+    self.productMediaView = [[CRMediaView alloc] init];
+    self.productMediaView.mediaContent = self.nativeAd.productMedia;
+  }
+  return self.productMediaView;
+}
+
+- (UIView *)iconMediaView {
+  if (self.advertiserLogoMediaView == nil) {
+    self.advertiserLogoMediaView = [[CRMediaView alloc] init];
+    self.advertiserLogoMediaView.mediaContent = self.nativeAd.advertiserLogoMedia;
+  }
+  return self.advertiserLogoMediaView;
+}
 
 @end

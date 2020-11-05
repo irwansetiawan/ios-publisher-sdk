@@ -159,7 +159,7 @@
   return criteoError;
 }
 
-#pragma mark Ad Adapter tests
+#pragma mark - Ad Adapter tests
 
 - (void)testEmptyProperties {
   NSDictionary *expected = @{};
@@ -187,6 +187,16 @@
   NSDictionary *props = customEvent.properties;
 
   XCTAssertEqualObjects(props, expected);
+}
+
+- (void)testMainMediaView {
+  CRNativeCustomEvent *customEvent = [self nativeCustomEventWithMocks];
+  XCTAssert([[customEvent mainMediaView] isKindOfClass:[CRMediaView class]]);
+}
+
+- (void)testIconMediaView {
+  CRNativeCustomEvent *customEvent = [self nativeCustomEventWithMocks];
+  XCTAssert([[customEvent iconMediaView] isKindOfClass:[CRMediaView class]]);
 }
 
 - (CRNativeAd *)nativeAdMock {
