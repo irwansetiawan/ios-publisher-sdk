@@ -29,8 +29,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class CRNativeAd;
+
 @interface CRNativeCustomEvent : MPNativeCustomEvent <MPNativeAdAdapter>
 
+@property(strong, nonatomic) CRNativeAd *nativeAd;
 @property (nonatomic, weak) id<MPNativeCustomEventDelegate, MPNativeAdAdapterDelegate> delegate;
 
 @end

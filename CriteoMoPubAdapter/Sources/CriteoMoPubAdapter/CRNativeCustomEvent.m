@@ -34,7 +34,6 @@
 
 @property(strong, nonatomic) CRNativeLoader *loader;
 
-@property(strong, nonatomic) CRNativeAd *nativeAd;
 @property(strong, nonatomic) CRMediaView *productMediaView;
 @property(strong, nonatomic) CRMediaView *advertiserLogoMediaView;
 
