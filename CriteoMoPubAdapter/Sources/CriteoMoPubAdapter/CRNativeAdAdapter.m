@@ -22,8 +22,6 @@
 
 @interface CRNativeAdAdapter ()
 
-@property(strong, nonatomic, readonly) CRNativeAd *nativeAd;
-
 @property(strong, nonatomic) CRMediaView *productMediaView;
 @property(strong, nonatomic) CRMediaView *advertiserLogoMediaView;
 
