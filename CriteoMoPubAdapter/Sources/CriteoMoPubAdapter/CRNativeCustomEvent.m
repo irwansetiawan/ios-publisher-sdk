@@ -146,6 +146,10 @@
   return nil;
 }
 
+- (BOOL)enableThirdPartyClickTracking {
+  return YES;
+}
+
 - (UIView *)mainMediaView {
   if (self.productMediaView == nil) {
     self.productMediaView = [[CRMediaView alloc] init];
