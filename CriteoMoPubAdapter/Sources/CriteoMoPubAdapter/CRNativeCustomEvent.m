@@ -110,12 +110,15 @@
 }
 
 - (void)nativeLoaderDidDetectImpression:(CRNativeLoader *)loader {
+  [self.delegate nativeAdWillLogImpression:self];
 }
 
 - (void)nativeLoaderDidDetectClick:(CRNativeLoader *)loader {
+  [self.delegate nativeAdDidClick:self];
 }
 
 - (void)nativeLoaderWillLeaveApplicationForNativeAd:(CRNativeLoader *)loader {
+  [self.delegate nativeAdWillLeaveApplicationFromAdapter:self];
 }
 
 # pragma mark MPNativeAdAdapter Implementation
