@@ -86,7 +86,7 @@
   event.delegate = OCMProtocolMock(@protocol(MPNativeCustomEventDelegate));
   id helper = OCMClassMock(CRCustomEventHelper.class);
   NSError *err = [self criteoError];
-  OCMStub([helper checkValidInfo:OCMOCK_ANY withError:[OCMArg setTo:err]]);
+  OCMStub([helper checkValidInfo:OCMOCK_ANY]);
 
   [event requestAdWithCustomEventInfo:@{} adMarkup:nil];
 
