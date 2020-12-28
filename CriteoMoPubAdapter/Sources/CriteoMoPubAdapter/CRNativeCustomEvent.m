@@ -48,11 +48,12 @@
 }
 
 - (void)requestAdWithCustomEventInfo:(NSDictionary *)info adMarkup:(NSString *)adMarkup {
-  NSError *error = nil;
-  if (![CRCustomEventHelper checkValidInfo:info withError:&error]) {
+  if (![CRCustomEventHelper checkValidInfo:info]) {
     if ([self.delegate respondsToSelector:@selector(nativeCustomEvent:didFailToLoadAdWithError:)]) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate nativeCustomEvent:self didFailToLoadAdWithError:error];
+        [self.delegate
+                    nativeCustomEvent:self
+             didFailToLoadAdWithError:MPNativeAdNSErrorForInvalidAdServerResponse(@"Criteo Native ad request failed due to invalid server parameters.")];
       });
     }
     return;
